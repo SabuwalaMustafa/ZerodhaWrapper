@@ -1,0 +1,160 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.github.sabuwalamustafa</groupId>
+  <artifactId>sabu-at-zerodhawrapper</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>sabu-at-zerodhawrapper</name>
+  <description>A brief description of my project</description>
+  <url>http://maven.apache.org</url>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>johndoe</id>
+      <name>John Doe</name>
+      <email>john.doe@example.com</email>
+      <url>http://www.example.com/johndoe</url>
+      <organization>Example Org</organization>
+      <organizationUrl>http://www.example.com</organizationUrl>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <url>https://github.com/sabuwalamustafa/zerodhawrapper</url>
+    <connection>scm:git:https://github.com/sabuwalamustafa/zerodhawrapper.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:sabuwalamustafa/zerodhawrapper.git</developerConnection>
+  </scm>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub OWNER Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/sabuwalamustafa/sabudatetimeutils</url>
+    </repository>
+    <snapshotRepository>
+      <id>github</id>
+      <name>GitHub OWNER Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/sabuwalamustafa/sabudatetimeutils</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <properties>
+    <!-- Specify your project's java version here -->
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.sonatype.central/central-publishing-maven-plugin -->
+    <dependency>
+      <groupId>org.sonatype.central</groupId>
+      <artifactId>central-publishing-maven-plugin</artifactId>
+      <version>0.4.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.zerodhatech.kiteconnect/kiteconnect -->
+    <dependency>
+      <groupId>com.zerodhatech.kiteconnect</groupId>
+      <artifactId>kiteconnect</artifactId>
+      <version>3.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.22</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.sabuwalamustafa</groupId>
+      <artifactId>sabu-at-datetime</artifactId>
+      <version>1.4</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.8.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
+          <tokenAuth>true</tokenAuth>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.3</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <!--suppress UnresolvedMavenProperty -->
+        <gpg.passphrase>${env.GPG_PASSPHRASE}</gpg.passphrase>
+      </properties>
+    </profile>
+  </profiles>
+</project>
