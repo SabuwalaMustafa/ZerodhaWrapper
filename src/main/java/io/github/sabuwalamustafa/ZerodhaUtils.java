@@ -2,15 +2,12 @@ package io.github.sabuwalamustafa;
 
 import com.google.auth.Credentials;
 import com.sabu.at.DateTimeUtils;
+import com.zerodhatech.models.*;
 import io.github.sabuwalamustafa.converters.OrderConverter;
 import io.github.sabuwalamustafa.interfaces.IBrokerUtils;
 import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
-import com.zerodhatech.models.LTPQuote;
-import com.zerodhatech.models.Margin;
-import com.zerodhatech.models.Order;
-import com.zerodhatech.models.OrderParams;
 import io.github.sabuwalamustafa.interfaces.IFileUtils;
 import io.github.sabuwalamustafa.interfaces.ILogStuff;
 import io.github.sabuwalamustafa.models.OrderInternal;
@@ -32,6 +29,7 @@ public class ZerodhaUtils implements IBrokerUtils {
     private ILogStuff logStuff;
     private IFileUtils gfsFileUtils;
     private FilePathsProvider filePathsProvider;
+    private Map<String, String> instrumentsMap;
 
     // zerodhaConfig should contain following keys:
     // zerodha_api
@@ -49,7 +47,7 @@ public class ZerodhaUtils implements IBrokerUtils {
     public static ZerodhaUtils getInstance(ILogStuff logStuff,
             Map<String, String> zerodhaConfig, Credentials credentials) {
         if (INSTANCE == null) {
-            INSTANCE = new ZerodhaUtils(logStuff, zerodhaConfig,credentials);
+            INSTANCE = new ZerodhaUtils(logStuff, zerodhaConfig, credentials);
         }
         return INSTANCE;
     }
@@ -64,6 +62,19 @@ public class ZerodhaUtils implements IBrokerUtils {
             logStuff.datedLogIt("session expired");
             setUpKiteSdk(zerodhaApi, zerodhaUserId);
         });
+
+        List<Instrument> instruments;
+        try {
+            instruments = kiteSdk.getInstruments("NSE");
+        } catch (KiteException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (instruments != null) {
+            instrumentsMap = new HashMap<>();
+            instruments.forEach(instrument -> instrumentsMap.put(
+                    instrument.getTradingsymbol(),
+                    String.valueOf(instrument.getInstrument_token())));
+        }
     }
 
     private void setUpKiteSdk(String zerodhaApi, String zerodhaUserId) {
@@ -285,6 +296,42 @@ public class ZerodhaUtils implements IBrokerUtils {
         // todo
         throw new RuntimeException(
                 "Zerodha.getAllOrders() is unimplemented...");
+    }
+
+    @Override
+    public ResponseWrapper<List<HistoricalData>> getHistoricalData(
+            String symbol,
+            Date startTimestamp, Date endTimestampInclusive) {
+        ResponseWrapper.ResponseWrapperBuilder<List<HistoricalData>> rwBuilder
+                = ResponseWrapper.builder();
+        String symbolToken = getInstrumentToken(symbol);
+        if (symbolToken == null) {
+            return rwBuilder.build();
+        }
+        try {
+            HistoricalData historicalData = kiteSdk.getHistoricalData(
+                    startTimestamp,
+                    endTimestampInclusive,
+                    symbolToken,
+                    "minute",
+                    false, true);
+            rwBuilder.tResponse(historicalData.dataArrayList);
+            rwBuilder.isSuccessful(true);
+        } catch (KiteException e) {
+            logStuff.datedLogIt(e.getMessage());
+        } catch (IOException e) {
+            logStuff.datedLogIt(e.getMessage());
+        }
+
+        return rwBuilder.build();
+    }
+
+    private String getInstrumentToken(String symbol) {
+        String symbolToken = null;
+        if (instrumentsMap != null) {
+            symbolToken = instrumentsMap.getOrDefault(symbol, null);
+        }
+        return symbolToken;
     }
 
     @Override public String getBrokerId() {

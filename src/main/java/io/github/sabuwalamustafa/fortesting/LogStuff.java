@@ -1,30 +1,32 @@
 package io.github.sabuwalamustafa.fortesting;
 
 import com.sabu.at.DateTimeUtils;
-import io.github.sabuwalamustafa.interfaces.IFilePathsProvider;
 import io.github.sabuwalamustafa.interfaces.IFileUtils;
 import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.utils_utils;
 
 import java.io.IOException;
 
 public class LogStuff implements ILogStuff {
     private static LogStuff INSTANCE;
+    String logsBaseFolderPath;
     private IFileUtils fileUtils;
-    private IFilePathsProvider filePathsProvider;
     private String currentLogFilePathStr;
+    private boolean disableLogging;
 
-    private LogStuff(IFileUtils fileUtils, IFilePathsProvider filePathsProvider) {
+    private LogStuff(IFileUtils fileUtils, String logsBaseFolder) {
         this.fileUtils = fileUtils;
-        this.filePathsProvider = filePathsProvider;
+        this.logsBaseFolderPath = logsBaseFolder;
+        this.disableLogging = logsBaseFolder == null;
     }
 
-    public static LogStuff getInstance(IFileUtils fileUtils, IFilePathsProvider filePathsProvider) {
+    public static LogStuff getInstance(IFileUtils fileUtils,
+            String logsBaseFolder) {
         if (INSTANCE == null) {
-            INSTANCE = new LogStuff(fileUtils, filePathsProvider);
+            INSTANCE = new LogStuff(fileUtils, logsBaseFolder);
         }
         return INSTANCE;
     }
-
 
     public void logIt(String... strsToLog) {
         log(strsToLog, 0);
@@ -43,6 +45,9 @@ public class LogStuff implements ILogStuff {
     }
 
     private void log(String[] strsToLog, int noOfBlankLines, boolean addDate) {
+        if (disableLogging) {
+            return;
+        }
         StringBuilder content = new StringBuilder();
         if (addDate) {
             content.append(DateTimeUtils.readableTimestamp()).append(" ");
@@ -61,6 +66,7 @@ public class LogStuff implements ILogStuff {
     }
 
     private void basicLogIt(String content) {
+        if(disableLogging) return;
         // TODO: Run it in a separate thread
         updateFileConfigs();
         try {
@@ -71,6 +77,13 @@ public class LogStuff implements ILogStuff {
     }
 
     private void updateFileConfigs() {
-        currentLogFilePathStr = filePathsProvider.getCurrentLogFilePath();
+        currentLogFilePathStr = getCurrentLogFilePath();
+    }
+
+    private String getCurrentLogFilePath() {
+        // todo: use String.format()
+        String fileName = "logs_" + DateTimeUtils.readableTimestampTillHours()
+                          + ".txt";
+        return utils_utils.buildPath(false, logsBaseFolderPath, fileName);
     }
 }
