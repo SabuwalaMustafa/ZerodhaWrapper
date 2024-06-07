@@ -35,23 +35,21 @@ public class ZerodhaUtils implements IBrokerUtils {
     // zerodhaConfig should contain following keys:
     // zerodha_api
     // zerodha_user_id
-    private ZerodhaUtils(ILogStuff logStuff, IFileUtils gfsFileUtils,
-            FilePathsProvider filePathsProvider,
+    private ZerodhaUtils(ILogStuff logStuff,
             Map<String, String> zerodhaConfig) {
         // todo: better way to pass zerodha config than a map<>
         this.logStuff = logStuff;
-        this.gfsFileUtils = gfsFileUtils;
-        this.filePathsProvider = filePathsProvider;
+        this.filePathsProvider = new FilePathsProvider();
+        this.gfsFileUtils = GFSFileUtilsFactory.getGFSFileUtils(
+                filePathsProvider.getGoogleKeyFilePath());
         init(zerodhaConfig.get("zerodha_api"),
              zerodhaConfig.get("zerodha_user_id"));
     }
 
     public static ZerodhaUtils getInstance(ILogStuff logStuff,
-            IFileUtils gfsFileUtils, FilePathsProvider filePathsProvider,
             Map<String, String> zerodhaConfig) {
         if (INSTANCE == null) {
-            INSTANCE = new ZerodhaUtils(logStuff, gfsFileUtils,
-                                        filePathsProvider, zerodhaConfig);
+            INSTANCE = new ZerodhaUtils(logStuff, zerodhaConfig);
         }
         return INSTANCE;
     }
@@ -277,14 +275,16 @@ public class ZerodhaUtils implements IBrokerUtils {
     @Override public ResponseWrapper<List<OrderInternal>> getAllOrders(
             List<String> symbols, LocalDateTime startTime) {
         // todo
-        throw new RuntimeException("Zerodha.getAllOrders() is unimplemented...");
+        throw new RuntimeException(
+                "Zerodha.getAllOrders() is unimplemented...");
     }
 
     @Override
     public ResponseWrapper<List<OrderInternal>> getAllOrders(String symbol,
             LocalDateTime startTime) {
         // todo
-        throw new RuntimeException("Zerodha.getAllOrders() is unimplemented...");
+        throw new RuntimeException(
+                "Zerodha.getAllOrders() is unimplemented...");
     }
 
     @Override public String getBrokerId() {
@@ -293,11 +293,13 @@ public class ZerodhaUtils implements IBrokerUtils {
 
     @Override public void noteTheBuyOrderPlaced(String orderId) {
         // todo
-        throw new RuntimeException("Zerodha.noteTheBuyOrderPlaced() is unimplemented...");
+        throw new RuntimeException(
+                "Zerodha.noteTheBuyOrderPlaced() is unimplemented...");
     }
 
     @Override public void noteTheSellOrderPlaced(String orderId, String refId) {
         // todo
-        throw new RuntimeException("Zerodha.noteTheSellOrderPlaced() is unimplemented...");
+        throw new RuntimeException(
+                "Zerodha.noteTheSellOrderPlaced() is unimplemented...");
     }
 }
