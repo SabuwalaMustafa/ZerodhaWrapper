@@ -1,13 +1,21 @@
 package io.github.sabuwalamustafa.fortesting;
 
 
+import io.github.sabuwalamustafa.FilePathsProvider;
 import io.github.sabuwalamustafa.ZerodhaUtils;
+import io.github.sabuwalamustafa.interfaces.IFilePathsProvider;
+import io.github.sabuwalamustafa.interfaces.IFileUtils;
+import io.github.sabuwalamustafa.interfaces.ILogStuff;
 
 import java.util.List;
 
 public class ZerodhaMain {
     public static void main(String[] args) {
-        ZerodhaUtils zerodhaUtils = ZerodhaUtils.getInstance(null, null, null,
+        ILogStuff logStuff = LogStuff.getInstance(null, null);
+        IFileUtils fileUtils = null;
+        IFilePathsProvider filePathsProvider = null;
+        ZerodhaUtils zerodhaUtils = ZerodhaUtils.getInstance(logStuff, fileUtils,
+                                                             new FilePathsProvider(),
                                                              null);
 
 //        String symbol = "RELIANCE";
