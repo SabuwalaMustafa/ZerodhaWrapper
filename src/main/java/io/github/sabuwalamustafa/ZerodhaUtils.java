@@ -301,7 +301,10 @@ public class ZerodhaUtils implements IBrokerUtils {
     @Override
     public ResponseWrapper<List<HistoricalData>> getHistoricalData(
             String symbol,
-            Date startTimestamp, Date endTimestampInclusive) {
+            String startTimestampStr, String endTimestampInclusiveStr) {
+        Date startTimestamp = DateTimeUtils.parseToUtilDate(startTimestampStr);
+        Date endTimestampInclusive = DateTimeUtils.parseToUtilDate(
+                endTimestampInclusiveStr);
         ResponseWrapper.ResponseWrapperBuilder<List<HistoricalData>> rwBuilder
                 = ResponseWrapper.builder();
         String symbolToken = getInstrumentToken(symbol);

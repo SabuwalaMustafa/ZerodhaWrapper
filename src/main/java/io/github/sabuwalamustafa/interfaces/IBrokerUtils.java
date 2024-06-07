@@ -34,8 +34,9 @@ public interface IBrokerUtils {
     ResponseWrapper<List<OrderInternal>> getAllOrders(String symbol,
             LocalDateTime startTime);
 
-    ResponseWrapper<List<HistoricalData>> getHistoricalData(String symbol,
-            Date startTimestamp, Date endTimestampInclusive);
+    ResponseWrapper<List<HistoricalData>> getHistoricalData(
+            String symbol,
+            String startTimestampStr, String endTimestampInclusiveStr);
 
     String getBrokerId();
 

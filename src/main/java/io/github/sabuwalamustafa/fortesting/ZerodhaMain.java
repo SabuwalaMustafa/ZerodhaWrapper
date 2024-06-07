@@ -61,11 +61,10 @@ public class ZerodhaMain {
 
 //        System.out.println(zerodhaUtils.getLtp("HDFCBANK").getTResponse());
 
-        Date startDate = getIstDate("2024-06-05 09:30:00");
-        Date endDateInclusive = getIstDate("2024-06-06 15:30:00");
         ResponseWrapper<List<HistoricalData>> rw
-                = zerodhaUtils.getHistoricalData(HDFCBANK, startDate,
-                                                 endDateInclusive);
+                = zerodhaUtils.getHistoricalData(HDFCBANK,
+                                                 "2024-06-05 09:30:00",
+                                                 "2024-06-06 15:30:00");
         rw.getTResponse().stream().forEach(v -> {
             System.out.println(v.timeStamp + " :: " + v.close);
         });
