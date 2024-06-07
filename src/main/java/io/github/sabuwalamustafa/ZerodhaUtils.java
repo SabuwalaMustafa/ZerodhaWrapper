@@ -1,5 +1,6 @@
 package io.github.sabuwalamustafa;
 
+import com.google.auth.Credentials;
 import com.sabu.at.DateTimeUtils;
 import io.github.sabuwalamustafa.converters.OrderConverter;
 import io.github.sabuwalamustafa.interfaces.IBrokerUtils;
@@ -36,20 +37,19 @@ public class ZerodhaUtils implements IBrokerUtils {
     // zerodha_api
     // zerodha_user_id
     private ZerodhaUtils(ILogStuff logStuff,
-            Map<String, String> zerodhaConfig) {
+            Map<String, String> zerodhaConfig, Credentials credentials) {
         // todo: better way to pass zerodha config than a map<>
         this.logStuff = logStuff;
         this.filePathsProvider = new FilePathsProvider();
-        this.gfsFileUtils = GFSFileUtilsFactory.getGFSFileUtils(
-                filePathsProvider.getGoogleKeyFilePath());
+        this.gfsFileUtils = GFSFileUtilsFactory.getGFSFileUtils(credentials);
         init(zerodhaConfig.get("zerodha_api"),
              zerodhaConfig.get("zerodha_user_id"));
     }
 
     public static ZerodhaUtils getInstance(ILogStuff logStuff,
-            Map<String, String> zerodhaConfig) {
+            Map<String, String> zerodhaConfig, Credentials credentials) {
         if (INSTANCE == null) {
-            INSTANCE = new ZerodhaUtils(logStuff, zerodhaConfig);
+            INSTANCE = new ZerodhaUtils(logStuff, zerodhaConfig,credentials);
         }
         return INSTANCE;
     }

@@ -2,6 +2,7 @@ package io.github.sabuwalamustafa;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.storage.*;
 import io.github.sabuwalamustafa.filesystemhandlers.ResourcesFileUtils;
@@ -24,17 +25,12 @@ public class GFSFileUtils implements IFileUtils {
     private final String bucketName;
     private final Storage storage;
 
-    private GFSFileUtils(String bucketName, String googleCloudKeyFilePath)
+    private GFSFileUtils(String bucketName, Credentials credentials)
             throws IOException {
         this.bucketName = bucketName;
         //todo: Needs google cloud key file on machine running this code.
         this.storage = StorageOptions.newBuilder()
-                                     .setCredentials(
-                                             ServiceAccountCredentials.fromStream(
-                                                     ResourcesFileUtils.getInstance()
-                                                                       .getInputStream(
-                                                                               GFSFileUtils.class,
-                                                                               googleCloudKeyFilePath)))
+                                     .setCredentials(credentials)
                                      .build()
                                      .getService();
         // todo: .setCredentials(ServiceAccountCredentials.fromJson
@@ -42,10 +38,10 @@ public class GFSFileUtils implements IFileUtils {
     }
 
     public static GFSFileUtils getInstance(String bucketName,
-            String googleKeyFilePath) throws IOException {
+            Credentials credentials) throws IOException {
         if (!INSTANCE_MAP.containsKey(bucketName)) {
             INSTANCE_MAP.put(bucketName,
-                             new GFSFileUtils(bucketName, googleKeyFilePath));
+                             new GFSFileUtils(bucketName, credentials));
         }
         return INSTANCE_MAP.get(bucketName);
     }

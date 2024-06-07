@@ -12,7 +12,8 @@ import java.util.List;
 public class ZerodhaMain {
     public static void main(String[] args) {
         ILogStuff logStuff = LogStuff.getInstance(null, null);
-        ZerodhaUtils zerodhaUtils = ZerodhaUtils.getInstance(logStuff, null);
+        ZerodhaUtils zerodhaUtils = ZerodhaUtils.getInstance(logStuff, null,
+                                                             null);
 
 //        String symbol = "RELIANCE";
 //        System.out.println(zerodhaUtils.getLtp(symbol).getTResponse());
