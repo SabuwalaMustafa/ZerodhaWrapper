@@ -12,10 +12,7 @@ import java.util.List;
 public class ZerodhaMain {
     public static void main(String[] args) {
         ILogStuff logStuff = LogStuff.getInstance(null, null);
-        IFileUtils fileUtils = null;
-        IFilePathsProvider filePathsProvider = null;
-        ZerodhaUtils zerodhaUtils = ZerodhaUtils.getInstance(logStuff, fileUtils,
-                                                             new FilePathsProvider(),
+        ZerodhaUtils zerodhaUtils = ZerodhaUtils.getInstance(logStuff, null,
                                                              null);
 
 //        String symbol = "RELIANCE";
