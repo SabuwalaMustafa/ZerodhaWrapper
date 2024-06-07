@@ -1,4 +1,4 @@
 .idea/*
 target/*
 src/test/*
-src/main/
+src/main/resources/*
