@@ -87,7 +87,7 @@
         <dependency>
             <groupId>io.github.sabuwalamustafa</groupId>
             <artifactId>sabu-at-datetime</artifactId>
-            <version>1.4</version>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
@@ -153,6 +153,17 @@
                 </executions>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>google_cloud_key.json</exclude>
+                    <exclude>
+                        src/main/java/io/github/sabuwalamustafa/fortesting/**
+                    </exclude>
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
 
