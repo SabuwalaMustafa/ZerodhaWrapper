@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class ZerodhaMain {
+class ZerodhaMain {
     private static final String HDFCBANK = "HDFCBANK";
     private static String zerodhaApi = "";
     private static String zerodhaUserId = "";

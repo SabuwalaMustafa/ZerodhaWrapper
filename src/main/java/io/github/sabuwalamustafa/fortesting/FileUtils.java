@@ -12,7 +12,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
 
-public class FileUtils implements IFileUtils {
+class FileUtils implements IFileUtils {
     private static FileUtils INSTANCE;
 
     private FileUtils() {
