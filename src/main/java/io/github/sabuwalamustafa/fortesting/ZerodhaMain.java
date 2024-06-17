@@ -10,6 +10,7 @@ import io.github.sabuwalamustafa.ZerodhaUtils;
 import io.github.sabuwalamustafa.interfaces.IFilePathsProvider;
 import io.github.sabuwalamustafa.interfaces.IFileUtils;
 import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 
 import java.io.IOException;
@@ -61,13 +62,18 @@ class ZerodhaMain {
 
 //        System.out.println(zerodhaUtils.getLtp("HDFCBANK").getTResponse());
 
-        ResponseWrapper<List<HistoricalData>> rw
-                = zerodhaUtils.getHistoricalData(HDFCBANK,
-                                                 "2024-06-05 09:30:00",
-                                                 "2024-06-06 15:30:00");
-        rw.getTResponse().stream().forEach(v -> {
-            System.out.println(v.timeStamp + " :: " + v.close);
-        });
+//        ResponseWrapper<List<HistoricalData>> rw
+//                = zerodhaUtils.getHistoricalData(HDFCBANK,
+//                                                 "2024-06-05 09:30:00",
+//                                                 "2024-06-06 15:30:00");
+//        rw.getTResponse().stream().forEach(v -> {
+//            System.out.println(v.timeStamp + " :: " + v.close);
+//        });
+
+        ResponseWrapper<List<OrderInternal>> rw
+                = zerodhaUtils.getAllOrders(HDFCBANK, null);
+        System.out.println(rw.getTResponse().size());
+        rw.getTResponse().stream().forEach(System.out::println);
     }
 
     private static Date getIstDate(String strTimestamp) {

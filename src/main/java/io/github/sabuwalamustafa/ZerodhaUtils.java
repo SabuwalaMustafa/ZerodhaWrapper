@@ -283,19 +283,34 @@ public class ZerodhaUtils implements IBrokerUtils {
         }
     }
 
+    // todo: testing pending
+    // Returns only *today's* orders.
+    // startTime not relevant here. Maybe a todo if/when required.
     @Override public ResponseWrapper<List<OrderInternal>> getAllOrders(
             List<String> symbols, LocalDateTime startTime) {
-        // todo
-        throw new RuntimeException(
-                "Zerodha.getAllOrders() is unimplemented...");
+        ResponseWrapper.ResponseWrapperBuilder<List<OrderInternal>>
+                responseWrapper
+                = ResponseWrapper.builder();
+        try {
+            List<OrderInternal> oil = kiteSdk.getOrders().stream().map(
+                    OrderConverter::toOrder).filter(
+                    oi -> symbols.contains(oi.getSymbol())).collect(
+                    Collectors.toList());
+            responseWrapper.tResponse(oil);
+            responseWrapper.isSuccessful(true);
+        } catch (KiteException e) {
+            logStuff.datedLogIt(e.getMessage());
+        } catch (IOException e) {
+            logStuff.datedLogIt(e.getMessage());
+        }
+        return responseWrapper.build();
     }
 
     @Override
     public ResponseWrapper<List<OrderInternal>> getAllOrders(String symbol,
             LocalDateTime startTime) {
-        // todo
-        throw new RuntimeException(
-                "Zerodha.getAllOrders() is unimplemented...");
+        // todo: Ensure startTime is null since it is not relevant for zerodha
+        return getAllOrders(List.of(symbol), startTime);
     }
 
     @Override
