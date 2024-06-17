@@ -23,14 +23,13 @@ import java.util.TimeZone;
 
 class ZerodhaMain {
     private static final String HDFCBANK = "HDFCBANK";
-    private static String zerodhaApi = "l000nr7vf2fnfkjd";
-    private static String zerodhaUserId = "PJQ430";
+    private static String zerodhaApi = "";
+    private static String zerodhaUserId = "";
 
     public static void main(String[] args) throws IOException {
         FileUtils fileUtils = FileUtils.getInstance();
         ILogStuff logStuff = LogStuff.getInstance(fileUtils, null);
 
-        String hdfcbank = "HDFCBANK";
         String googleCloudKeyFilePath = "google_cloud_key.json";
         ServiceAccountCredentials
                 credential = ServiceAccountCredentials.fromStream(
@@ -72,7 +71,7 @@ class ZerodhaMain {
 //        });
 
         ResponseWrapper<List<OrderInternal>> rw
-                = zerodhaUtils.getAllOrders(hdfcbank, null);
+                = zerodhaUtils.getAllOrders(HDFCBANK, null);
         System.out.println(rw.getTResponse().size());
         rw.getTResponse().stream().forEach(System.out::println);
     }
