@@ -7,7 +7,7 @@ import io.github.sabuwalamustafa.utils_utils;
 
 import java.io.IOException;
 
-public class LogStuff implements ILogStuff {
+class LogStuff implements ILogStuff {
     private static LogStuff INSTANCE;
     String logsBaseFolderPath;
     private IFileUtils fileUtils;

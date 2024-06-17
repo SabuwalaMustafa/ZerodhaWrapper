@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * #testing
  */
-public class ZerodhaApiManualTester {
+class ZerodhaApiManualTester {
     public static final String ZERODHA_API = "";
     public static final String ZERODHA_SECRET = "";
     public static final String ZERODHA_USER_ID = "";

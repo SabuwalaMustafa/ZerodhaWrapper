@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class ResourcesFileUtils implements IFileUtils {
+class ResourcesFileUtils implements IFileUtils {
     private static ResourcesFileUtils INSTANCE;
 
     private ResourcesFileUtils() {
