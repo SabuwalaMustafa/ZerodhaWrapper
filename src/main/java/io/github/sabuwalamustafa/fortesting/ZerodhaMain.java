@@ -10,6 +10,7 @@ import io.github.sabuwalamustafa.ZerodhaUtils;
 import io.github.sabuwalamustafa.interfaces.IFilePathsProvider;
 import io.github.sabuwalamustafa.interfaces.IFileUtils;
 import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 
 import java.io.IOException;
@@ -22,13 +23,14 @@ import java.util.TimeZone;
 
 class ZerodhaMain {
     private static final String HDFCBANK = "HDFCBANK";
-    private static String zerodhaApi = "";
-    private static String zerodhaUserId = "";
+    private static String zerodhaApi = "l000nr7vf2fnfkjd";
+    private static String zerodhaUserId = "PJQ430";
 
     public static void main(String[] args) throws IOException {
         FileUtils fileUtils = FileUtils.getInstance();
         ILogStuff logStuff = LogStuff.getInstance(fileUtils, null);
 
+        String hdfcbank = "HDFCBANK";
         String googleCloudKeyFilePath = "google_cloud_key.json";
         ServiceAccountCredentials
                 credential = ServiceAccountCredentials.fromStream(
@@ -61,13 +63,18 @@ class ZerodhaMain {
 
 //        System.out.println(zerodhaUtils.getLtp("HDFCBANK").getTResponse());
 
-        ResponseWrapper<List<HistoricalData>> rw
-                = zerodhaUtils.getHistoricalData(HDFCBANK,
-                                                 "2024-06-05 09:30:00",
-                                                 "2024-06-06 15:30:00");
-        rw.getTResponse().stream().forEach(v -> {
-            System.out.println(v.timeStamp + " :: " + v.close);
-        });
+//        ResponseWrapper<List<HistoricalData>> rw
+//                = zerodhaUtils.getHistoricalData(HDFCBANK,
+//                                                 "2024-06-05 09:30:00",
+//                                                 "2024-06-06 15:30:00");
+//        rw.getTResponse().stream().forEach(v -> {
+//            System.out.println(v.timeStamp + " :: " + v.close);
+//        });
+
+        ResponseWrapper<List<OrderInternal>> rw
+                = zerodhaUtils.getAllOrders(hdfcbank, null);
+        System.out.println(rw.getTResponse().size());
+        rw.getTResponse().stream().forEach(System.out::println);
     }
 
     private static Date getIstDate(String strTimestamp) {
