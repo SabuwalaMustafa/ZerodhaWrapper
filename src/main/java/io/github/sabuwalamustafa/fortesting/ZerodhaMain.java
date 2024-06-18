@@ -13,30 +13,39 @@ import io.github.sabuwalamustafa.interfaces.ILogStuff;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 
 class ZerodhaMain {
     private static final String HDFCBANK = "HDFCBANK";
-    private static String zerodhaApi = "";
-    private static String zerodhaUserId = "";
 
     public static void main(String[] args) throws IOException {
+        String zerodhaApi = args[0].split("=", 2)[1];
+        String zerodhaUserId = args[1].split("=", 2)[1];
         FileUtils fileUtils = FileUtils.getInstance();
         ILogStuff logStuff = LogStuff.getInstance(fileUtils, null);
 
-        String googleCloudKeyFilePath = "google_cloud_key.json";
+//        String googleCloudKeyFilePath = "google_cloud_key.json";
+//        InputStream inputStream = ResourcesFileUtils.getInstance()
+//                                                    .getInputStream(
+//                                  GFSFileUtils.class,
+//                                  googleCloudKeyFilePath);
+        // Use the input stream as needed (e.g., read its content)
+        String googleCloudKeyFilePath
+                = "D:\\Interview prep 2023\\Config\\google_cloud_key_0.json";
+        InputStream inputStream = new FileInputStream(googleCloudKeyFilePath);
+//        try (Scanner scanner = new Scanner(inputStream)) {
+//            while (scanner.hasNextLine()) {
+//                System.out.println(scanner.nextLine());
+//            }
+//        }
         ServiceAccountCredentials
                 credential = ServiceAccountCredentials.fromStream(
-                ResourcesFileUtils.getInstance()
-                                  .getInputStream(
-                                          GFSFileUtils.class,
-                                          googleCloudKeyFilePath));
+                inputStream);
 
         ZerodhaUtils zerodhaUtils = ZerodhaUtils.getInstance(logStuff,
                                                              Map.of("zerodha_api",
@@ -44,6 +53,10 @@ class ZerodhaMain {
                                                                     "zerodha_user_id",
                                                                     zerodhaUserId),
                                                              credential);
+
+        ResponseWrapper<Double> fundsAvailableRW
+                = zerodhaUtils.getFundsAvailable();
+        System.out.println(fundsAvailableRW.getNumberResponse());
 
 //        String symbol = "RELIANCE";
 //        System.out.println(zerodhaUtils.getLtp(symbol).getTResponse());
@@ -70,10 +83,10 @@ class ZerodhaMain {
 //            System.out.println(v.timeStamp + " :: " + v.close);
 //        });
 
-        ResponseWrapper<List<OrderInternal>> rw
-                = zerodhaUtils.getAllOrders(HDFCBANK, null);
-        System.out.println(rw.getTResponse().size());
-        rw.getTResponse().stream().forEach(System.out::println);
+//        ResponseWrapper<List<OrderInternal>> rw
+//                = zerodhaUtils.getAllOrders(HDFCBANK, null);
+//        System.out.println(rw.getTResponse().size());
+//        rw.getTResponse().stream().forEach(System.out::println);
     }
 
     private static Date getIstDate(String strTimestamp) {
