@@ -103,9 +103,9 @@ public class ZerodhaUtils implements IBrokerUtils {
                     Double.parseDouble(margins.available.liveBalance));
             responseWrapper.isSuccessful(true);
         } catch (KiteException e) {
-            // todo log
+            e.printStackTrace();
         } catch (IOException e) {
-            // todo log
+            e.printStackTrace();
         }
         return responseWrapper.build();
     }

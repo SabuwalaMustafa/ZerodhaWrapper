@@ -92,7 +92,7 @@ class ResourcesFileUtils implements IFileUtils {
 
     public InputStream getInputStream(Class myClass,
             String resourceFilePathStr) {
-        return myClass.getClassLoader().getResourceAsStream(
+        return ResourcesFileUtils.class.getClassLoader().getResourceAsStream(
                 resourceFilePathStr);
     }
 }
