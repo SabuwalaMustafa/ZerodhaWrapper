@@ -56,7 +56,7 @@ class ZerodhaMain {
 
         ResponseWrapper<Double> fundsAvailableRW
                 = zerodhaUtils.getFundsAvailable();
-        System.out.println(fundsAvailableRW.getNumberResponse());
+        System.out.println(fundsAvailableRW.getTResponse());
 
 //        String symbol = "RELIANCE";
 //        System.out.println(zerodhaUtils.getLtp(symbol).getTResponse());
