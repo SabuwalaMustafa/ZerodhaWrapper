@@ -156,8 +156,8 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <!-- todo: if this is the right way to exclude-->
                 <excludes>
-                    <exclude>google_cloud_key.json</exclude>
                     <exclude>
                         src/main/java/io/github/sabuwalamustafa/fortesting/**
                     </exclude>
@@ -165,7 +165,6 @@
             </resource>
         </resources>
     </build>
-
 
     <profiles>
         <profile>
