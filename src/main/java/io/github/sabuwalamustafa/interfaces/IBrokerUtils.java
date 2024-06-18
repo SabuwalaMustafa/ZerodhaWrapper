@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface IBrokerUtils {
     ResponseWrapper<Double> getFundsAvailable();
@@ -24,7 +25,7 @@ public interface IBrokerUtils {
     ResponseWrapper<String> placeSellOrder(String symbol, double quantity,
             double price);
 
-    ResponseWrapper<String> getLtpSymbolList(List<String> symbols);
+    ResponseWrapper<Map<String, String>> getLtpSymbolList(List<String> symbols);
 
     boolean isMarketOpen();
 

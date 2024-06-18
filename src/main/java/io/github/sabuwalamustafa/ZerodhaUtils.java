@@ -190,7 +190,7 @@ public class ZerodhaUtils implements IBrokerUtils {
         try {
             Order order = kiteSdk.placeOrder(orderParams,
                                              Constants.VARIETY_REGULAR);
-            responseWrapper.strResponse(order.orderId);
+            responseWrapper.tResponse(order.orderId);
             responseWrapper.isSuccessful(true);
         } catch (KiteException e) {
             // todo log
@@ -219,7 +219,7 @@ public class ZerodhaUtils implements IBrokerUtils {
         try {
             Order order = kiteSdk.placeOrder(orderParams,
                                              Constants.VARIETY_REGULAR);
-            responseWrapper.strResponse(order.orderId);
+            responseWrapper.tResponse(order.orderId);
             responseWrapper.isSuccessful(true);
         } catch (KiteException e) {
             logStuff.datedLogIt(e.getMessage());
@@ -231,8 +231,10 @@ public class ZerodhaUtils implements IBrokerUtils {
 
     // Tested, status: WORKING
     @Override
-    public ResponseWrapper<String> getLtpSymbolList(List<String> symbols) {
-        ResponseWrapper.ResponseWrapperBuilder<String> responseWrapper
+    public ResponseWrapper<Map<String, String>> getLtpSymbolList(
+            List<String> symbols) {
+        ResponseWrapper.ResponseWrapperBuilder<Map<String, String>>
+                responseWrapper
                 = ResponseWrapper.builder();
         try {
             List<String> nseSymbols = symbols.stream().map(
@@ -246,7 +248,7 @@ public class ZerodhaUtils implements IBrokerUtils {
                                              entry.getKey()),
                                      entry -> String.valueOf(
                                              entry.getValue().lastPrice)));
-            responseWrapper.mapResponse(res);
+            responseWrapper.tResponse(res);
             responseWrapper.isSuccessful(true);
         } catch (KiteException e) {
             // todo log
