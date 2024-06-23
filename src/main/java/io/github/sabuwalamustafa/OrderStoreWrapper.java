@@ -12,6 +12,7 @@ public class OrderStoreWrapper {
     }
 
     public void onSuccessfulOrderPlacement(OrderInternal orderInternal) {
+        // todo: failure handling?
         orderStore.createOrderEntry(orderInternal);
     }
 

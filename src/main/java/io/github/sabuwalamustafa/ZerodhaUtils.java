@@ -10,6 +10,7 @@ import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
 import io.github.sabuwalamustafa.interfaces.IFileUtils;
 import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.models.OrderCore;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 
@@ -118,7 +119,7 @@ public class ZerodhaUtils implements IBrokerUtils {
         return responseWrapper.build();
     }
 
-    // Tested, status: WORKING (with an assumption)
+    // todo: testing pending
     // Returns the latest order state details.
     @Override public ResponseWrapper<OrderInternal> getOrderDetails(
             String orderId) {
@@ -129,7 +130,7 @@ public class ZerodhaUtils implements IBrokerUtils {
                 oiFromOrderStore.getStatus())) {
             oi = oiFromOrderStore;
         } else {
-            // todo: Consider and evaluate ordering zerodha first.
+            // todo: Consider and evaluate querying zerodha first.
             try {
                 List<Order> orders = kiteSdk.getOrderHistory(orderId);
                 Order latestOrder = ZerodhaUtilsHelper.getRelevantOrder(orders);
@@ -171,19 +172,19 @@ public class ZerodhaUtils implements IBrokerUtils {
     }
 
     // Tested, status: WORKING
-    @Override public ResponseWrapper<String> placeBuyOrder(String symbol,
-            double quantity, double price) {
+    @Override public ResponseWrapper<String> placeBuyOrder(
+            OrderCore orderCore) {
         ResponseWrapper.ResponseWrapperBuilder<String> responseWrapper
                 = ResponseWrapper.builder();
         OrderParams orderParams = new OrderParams();
-        orderParams.quantity = (int) quantity;
+        orderParams.quantity = (int) orderCore.getQuantity();
         orderParams.orderType = Constants.ORDER_TYPE_LIMIT;
-        orderParams.tradingsymbol = symbol;
+        orderParams.tradingsymbol = orderCore.getSymbol();
         orderParams.product = Constants.PRODUCT_CNC;
         orderParams.exchange = Constants.EXCHANGE_NSE;
         orderParams.transactionType = Constants.TRANSACTION_TYPE_BUY;
         orderParams.validity = Constants.VALIDITY_DAY;
-        orderParams.price = price;
+        orderParams.price = orderCore.getPrice();
         // Can set tag as well
 
         try {
@@ -193,7 +194,7 @@ public class ZerodhaUtils implements IBrokerUtils {
             responseWrapper.isSuccessful(true);
 
             OrderInternal orderInternal = OrderConverter.toOrder(order);
-            this.noteTheBuyOrderPlaced(orderInternal);
+            noteTheBuyOrderPlaced(orderInternal);
         } catch (KiteException e) {
             // todo log
         } catch (IOException e) {
@@ -203,19 +204,19 @@ public class ZerodhaUtils implements IBrokerUtils {
     }
 
     // Tested, status: WORKING
-    @Override public ResponseWrapper<String> placeSellOrder(String symbol,
-            double quantity, double price) {
+    @Override public ResponseWrapper<String> placeSellOrder(
+            OrderCore orderCore) {
         ResponseWrapper.ResponseWrapperBuilder<String> responseWrapper
                 = ResponseWrapper.builder();
         OrderParams orderParams = new OrderParams();
-        orderParams.quantity = (int) quantity;
+        orderParams.quantity = (int) orderCore.getQuantity();
         orderParams.orderType = Constants.ORDER_TYPE_LIMIT;
-        orderParams.tradingsymbol = symbol;
+        orderParams.tradingsymbol = orderCore.getSymbol();
         orderParams.product = Constants.PRODUCT_CNC;
         orderParams.exchange = Constants.EXCHANGE_NSE;
         orderParams.transactionType = Constants.TRANSACTION_TYPE_SELL;
         orderParams.validity = Constants.VALIDITY_DAY;
-        orderParams.price = price;
+        orderParams.price = orderCore.getPrice();
         // Can set tag as well
 
         try {
@@ -241,7 +242,7 @@ public class ZerodhaUtils implements IBrokerUtils {
                 responseWrapper = ResponseWrapper.builder();
         try {
             List<String> nseSymbols = symbols.stream().map(
-                    symbol -> utils_utils.getNseSymbol(symbol)).collect(
+                    utils_utils::getNseSymbol).collect(
                     Collectors.toList());
             Map<String, LTPQuote> ltpQuote = kiteSdk.getLTP(
                     nseSymbols.toArray(new String[0]));
@@ -289,9 +290,6 @@ public class ZerodhaUtils implements IBrokerUtils {
         List<OrderInternal> ordersFromOrderStore
                 = zerodhaUtilsHelper.getOrdersFromOrderStore(orderStoreWrapper);
 
-        ResponseWrapper.ResponseWrapperBuilder<List<OrderInternal>>
-                responseWrapper = ResponseWrapper.builder();
-
         // Merging logic START.
         Set<String> orderIdSetFromZerodha = ordersFromZerodha != null ?
                                             ordersFromZerodha.stream()
@@ -319,6 +317,8 @@ public class ZerodhaUtils implements IBrokerUtils {
                 Collectors.toList());
         // Filtering based on symbol and startTime END.
 
+        ResponseWrapper.ResponseWrapperBuilder<List<OrderInternal>>
+                responseWrapper = ResponseWrapper.builder();
         responseWrapper.tResponse(mergedOrders);
         responseWrapper.isSuccessful(true);
         return responseWrapper.build();

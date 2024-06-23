@@ -1,6 +1,7 @@
 package io.github.sabuwalamustafa.interfaces;
 
 import com.zerodhatech.models.HistoricalData;
+import io.github.sabuwalamustafa.models.OrderCore;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 
@@ -15,11 +16,9 @@ public interface IBrokerUtils {
 
     ResponseWrapper<Double> getLtp(String symbol);
 
-    ResponseWrapper<String> placeBuyOrder(String symbol, double quantity,
-            double price);
+    ResponseWrapper<String> placeBuyOrder(OrderCore orderCore);
 
-    ResponseWrapper<String> placeSellOrder(String symbol, double quantity,
-            double price);
+    ResponseWrapper<String> placeSellOrder(OrderCore orderCore);
 
     ResponseWrapper<Map<String, String>> getLtpSymbolList(List<String> symbols);
 
