@@ -1,14 +1,10 @@
 package io.github.sabuwalamustafa.interfaces;
 
-import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.models.HistoricalData;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +37,7 @@ public interface IBrokerUtils {
 
     String getBrokerId();
 
-    void noteTheBuyOrderPlaced(String orderId);
+    void noteTheBuyOrderPlaced(OrderInternal orderInternal);
 
-    void noteTheSellOrderPlaced(String orderId, String refId);
+    void noteTheSellOrderPlaced(OrderInternal orderInternal);
 }
