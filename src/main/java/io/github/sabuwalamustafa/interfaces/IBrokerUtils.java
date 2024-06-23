@@ -1,14 +1,11 @@
 package io.github.sabuwalamustafa.interfaces;
 
-import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.models.HistoricalData;
+import io.github.sabuwalamustafa.models.OrderCore;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,11 +16,9 @@ public interface IBrokerUtils {
 
     ResponseWrapper<Double> getLtp(String symbol);
 
-    ResponseWrapper<String> placeBuyOrder(String symbol, double quantity,
-            double price);
+    ResponseWrapper<String> placeBuyOrder(OrderCore orderCore);
 
-    ResponseWrapper<String> placeSellOrder(String symbol, double quantity,
-            double price);
+    ResponseWrapper<String> placeSellOrder(OrderCore orderCore);
 
     ResponseWrapper<Map<String, String>> getLtpSymbolList(List<String> symbols);
 
@@ -41,7 +36,7 @@ public interface IBrokerUtils {
 
     String getBrokerId();
 
-    void noteTheBuyOrderPlaced(String orderId);
+    void noteTheBuyOrderPlaced(OrderInternal orderInternal);
 
-    void noteTheSellOrderPlaced(String orderId, String refId);
+    void noteTheSellOrderPlaced(OrderInternal orderInternal);
 }

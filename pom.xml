@@ -5,7 +5,7 @@
     <groupId>io.github.sabuwalamustafa</groupId>
     <artifactId>sabu-at-zerodhawrapper</artifactId>
     <packaging>jar</packaging>
-    <version>1.4</version>
+    <version>1.5</version>
     <name>sabu-at-zerodhawrapper</name>
     <description>A brief description of my project</description>
     <url>http://maven.apache.org</url>
@@ -30,6 +30,7 @@
         </developer>
     </developers>
     <scm>
+        <!-- Project name should have all small case letters.-->
         <url>https://github.com/sabuwalamustafa/zerodhawrapper</url>
         <connection>
             scm:git:https://github.com/sabuwalamustafa/zerodhawrapper.git
@@ -55,7 +56,6 @@
         </snapshotRepository>
     </distributionManagement>
     <properties>
-        <!-- Specify your project's java version here -->
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
@@ -90,11 +90,17 @@
             <version>1.6</version>
         </dependency>
         <dependency>
+            <groupId>io.github.sabuwalamustafa</groupId>
+            <artifactId>sabu-at-orderstore</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-storage</artifactId>
-            <version>2.8.0</version> <!-- Use the latest version -->
+            <version>2.8.0</version>
         </dependency>
     </dependencies>
+    <!-- Note: whole build, profile section directly copyable to a new mvn jar.-->
     <build>
         <plugins>
             <plugin>

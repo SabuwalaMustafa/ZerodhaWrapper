@@ -3,7 +3,9 @@ package io.github.sabuwalamustafa;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.sabuwalamustafa.models.OrderStatus;
 
+import java.util.List;
 import java.util.Objects;
 
 public class utils_utils {
@@ -48,5 +50,10 @@ public class utils_utils {
             path.append(FILE_PATH_DELIMITER);
         }
         return path.toString();
+    }
+
+    public static boolean isTerminalStatus(OrderStatus status) {
+        return List.of(OrderStatus.COMPLETED, OrderStatus.CANCELLED,
+                       OrderStatus.REJECTED).contains(status);
     }
 }
