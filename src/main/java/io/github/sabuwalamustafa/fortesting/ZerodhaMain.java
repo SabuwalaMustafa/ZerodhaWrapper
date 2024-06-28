@@ -4,7 +4,9 @@ package io.github.sabuwalamustafa.fortesting;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import io.github.sabuwalamustafa.ZerodhaUtils;
 import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.models.DatabaseConfig;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
+import io.github.sabuwalamustafa.utils_utils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,8 +19,15 @@ class ZerodhaMain {
     private static final String HDFCBANK = "HDFCBANK";
 
     public static void main(String[] args) throws IOException {
-        String zerodhaApi = args[0].split("=", 2)[1];
-        String zerodhaUserId = args[1].split("=", 2)[1];
+        Map<String, String> argsMap = utils_utils.parseCmdLine(args);
+        String zerodhaApi = argsMap.get("zerodhaApi");
+        String zerodhaUserId = argsMap.get("zerodhaUserId");
+
+        DatabaseConfig databaseConfig = new DatabaseConfig();
+        databaseConfig.setJdbcUrl(argsMap.get("jdbcUrl"));
+        databaseConfig.setUsername(argsMap.get("jdbcUsername"));
+        databaseConfig.setPassword(argsMap.get("jdbcPassword"));
+
         FileUtils fileUtils = FileUtils.getInstance();
         ILogStuff logStuff = LogStuff.getInstance(fileUtils, null);
 
@@ -45,7 +54,8 @@ class ZerodhaMain {
                                                                     zerodhaApi,
                                                                     "zerodha_user_id",
                                                                     zerodhaUserId),
-                                                             credential);
+                                                             credential,
+                                                             databaseConfig);
 
         ResponseWrapper<Double> fundsAvailableRW
                 = zerodhaUtils.getFundsAvailable();

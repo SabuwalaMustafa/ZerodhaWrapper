@@ -68,16 +68,14 @@ public class ZerodhaUtilsHelper {
             oil = kiteSdk.getOrders().stream().map(
                     OrderConverter::toOrder).collect(
                     Collectors.toList());
-        } catch (KiteException e) {
-            logStuff.datedLogIt(e.getMessage());
-        } catch (IOException e) {
+        } catch (KiteException | IOException e) {
             logStuff.datedLogIt(e.getMessage());
         }
         return oil;
     }
 
-    List<OrderInternal> getOrdersFromOrderStore(
-            OrderStoreWrapper orderStoreWrapper) {
+    List<OrderInternal> getAllOrdersFromOrderStore(
+            OrderStoreWrapper orderStoreWrapper) throws Exception {
         // Assumption here is that OrderStore would have ALL the orderIds.
         return orderStoreWrapper.getAllOrders();
     }
