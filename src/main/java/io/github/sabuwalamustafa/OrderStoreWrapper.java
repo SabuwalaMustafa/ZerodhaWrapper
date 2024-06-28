@@ -1,5 +1,6 @@
 package io.github.sabuwalamustafa;
 
+import io.github.sabuwalamustafa.models.DatabaseConfig;
 import io.github.sabuwalamustafa.models.OrderInternal;
 
 import java.util.List;
@@ -7,8 +8,10 @@ import java.util.List;
 public class OrderStoreWrapper {
     private OrderStore orderStore;
 
-    public OrderStoreWrapper() {
-        this.orderStore = new OrderStore();
+    public OrderStoreWrapper(DatabaseConfig databaseConfig) {
+        this.orderStore = new OrderStore(databaseConfig.getJdbcUrl(),
+                                         databaseConfig.getUsername(),
+                                         databaseConfig.getPassword());
     }
 
     public void onSuccessfulOrderPlacement(OrderInternal orderInternal) {
@@ -20,7 +23,7 @@ public class OrderStoreWrapper {
         return orderStore.readOrderEntry(orderId);
     }
 
-    public List<OrderInternal> getAllOrders() {
+    public List<OrderInternal> getAllOrders() throws Exception {
         return orderStore.listAllOrderEntries();
     }
 }

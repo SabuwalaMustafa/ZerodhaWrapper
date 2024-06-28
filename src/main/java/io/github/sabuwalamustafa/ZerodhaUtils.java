@@ -10,6 +10,7 @@ import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
 import io.github.sabuwalamustafa.interfaces.IFileUtils;
 import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.models.DatabaseConfig;
 import io.github.sabuwalamustafa.models.OrderCore;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
@@ -37,21 +38,23 @@ public class ZerodhaUtils implements IBrokerUtils {
     // zerodha_api
     // zerodha_user_id
     private ZerodhaUtils(ILogStuff logStuff, Map<String, String> zerodhaConfig,
-            Credentials credentials) {
+            Credentials credentials, DatabaseConfig databaseConfig) {
         // todo: better way to pass zerodha config than a map<>
         this.logStuff = logStuff;
         this.filePathsProvider = new FilePathsProvider();
         this.gfsFileUtils = GFSFileUtilsFactory.getGFSFileUtils(credentials);
-        this.orderStoreWrapper = new OrderStoreWrapper();
+        this.orderStoreWrapper = new OrderStoreWrapper(databaseConfig);
 
         init(zerodhaConfig.get("zerodha_api"),
              zerodhaConfig.get("zerodha_user_id"));
     }
 
     public static ZerodhaUtils getInstance(ILogStuff logStuff,
-            Map<String, String> zerodhaConfig, Credentials credentials) {
+            Map<String, String> zerodhaConfig, Credentials credentials,
+            DatabaseConfig databaseConfig) {
         if (INSTANCE == null) {
-            INSTANCE = new ZerodhaUtils(logStuff, zerodhaConfig, credentials);
+            INSTANCE = new ZerodhaUtils(logStuff, zerodhaConfig, credentials,
+                                        databaseConfig);
         }
         return INSTANCE;
     }
@@ -136,10 +139,7 @@ public class ZerodhaUtils implements IBrokerUtils {
                 Order latestOrder = ZerodhaUtilsHelper.getRelevantOrder(orders);
                 oi = (latestOrder == null) ? null :
                      OrderConverter.toOrder(latestOrder);
-
-            } catch (KiteException e) {
-                // todo log
-            } catch (IOException e) {
+            } catch (KiteException | IOException e) {
                 // todo log
             }
         }
@@ -227,9 +227,7 @@ public class ZerodhaUtils implements IBrokerUtils {
 
             OrderInternal orderInternal = OrderConverter.toOrder(order);
             noteTheSellOrderPlaced(orderInternal);
-        } catch (KiteException e) {
-            logStuff.datedLogIt(e.getMessage());
-        } catch (IOException e) {
+        } catch (KiteException | IOException e) {
             logStuff.datedLogIt(e.getMessage());
         }
         return responseWrapper.build();
@@ -287,8 +285,13 @@ public class ZerodhaUtils implements IBrokerUtils {
         List<OrderInternal> ordersFromZerodha
                 = zerodhaUtilsHelper.getOrdersFromZerodha(kiteSdk);
 
-        List<OrderInternal> ordersFromOrderStore
-                = zerodhaUtilsHelper.getOrdersFromOrderStore(orderStoreWrapper);
+        List<OrderInternal> ordersFromOrderStore = null;
+        try {
+            ordersFromOrderStore = zerodhaUtilsHelper.getAllOrdersFromOrderStore(
+                    orderStoreWrapper);
+        } catch (Exception e) {
+            // todo: log
+        }
 
         // Merging logic START.
         Set<String> orderIdSetFromZerodha = ordersFromZerodha != null ?
@@ -297,14 +300,19 @@ public class ZerodhaUtils implements IBrokerUtils {
                                                              .collect(
                                                                      Collectors.toSet()) :
                                             new HashSet<>();
-        List<OrderInternal> mergedOrders = ordersFromZerodha != null ?
-                                           ordersFromZerodha :
-                                           new ArrayList<>();
-        for (OrderInternal oi : ordersFromOrderStore) {
-            if (orderIdSetFromZerodha.contains(oi.getId())) {
-                continue;
+        List<OrderInternal> mergedOrders = new ArrayList<>();
+
+        if (ordersFromZerodha != null) {
+            mergedOrders.addAll(ordersFromZerodha);
+        }
+
+        if (ordersFromOrderStore != null) {
+            for (OrderInternal oi : ordersFromOrderStore) {
+                if (orderIdSetFromZerodha.contains(oi.getId())) {
+                    continue;
+                }
+                mergedOrders.add(oi);
             }
-            mergedOrders.add(oi);
         }
         // Merging logic END.
 
