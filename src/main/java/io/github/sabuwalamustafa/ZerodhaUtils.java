@@ -279,7 +279,6 @@ public class ZerodhaUtils implements IBrokerUtils {
     }
 
     // todo: testing pending
-    // Returns only *today's* orders.
     @Override public ResponseWrapper<List<OrderInternal>> getAllOrders(
             List<String> symbols, LocalDateTime startTime) {
         List<OrderInternal> ordersFromZerodha
@@ -287,7 +286,8 @@ public class ZerodhaUtils implements IBrokerUtils {
 
         List<OrderInternal> ordersFromOrderStore = null;
         try {
-            ordersFromOrderStore = zerodhaUtilsHelper.getAllOrdersFromOrderStore(
+            ordersFromOrderStore
+                    = zerodhaUtilsHelper.getAllOrdersFromOrderStore(
                     orderStoreWrapper);
         } catch (Exception e) {
             // todo: log
@@ -377,5 +377,16 @@ public class ZerodhaUtils implements IBrokerUtils {
     @Override public void noteTheSellOrderPlaced(OrderInternal orderInternal) {
         // todo: Think if something else is needed here.
         orderStoreWrapper.onSuccessfulOrderPlacement(orderInternal);
+    }
+
+    public ResponseWrapper<List<OrderInternal>> getAllTodaysOrdersFromZerodha() {
+        List<OrderInternal> ordersFromZerodha
+                = zerodhaUtilsHelper.getOrdersFromZerodha(kiteSdk);
+
+        ResponseWrapper.ResponseWrapperBuilder<List<OrderInternal>>
+                responseWrapper = ResponseWrapper.builder();
+        responseWrapper.tResponse(ordersFromZerodha);
+        responseWrapper.isSuccessful(true);
+        return responseWrapper.build();
     }
 }
