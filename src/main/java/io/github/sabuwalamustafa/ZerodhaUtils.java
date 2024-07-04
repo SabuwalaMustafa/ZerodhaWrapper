@@ -192,8 +192,7 @@ public class ZerodhaUtils implements IBrokerUtils {
             responseWrapper.tResponse(order.orderId);
             responseWrapper.isSuccessful(true);
 
-            OrderInternal orderInternal = OrderConverter.toOrder(order);
-            noteTheBuyOrderPlaced(orderInternal);
+            noteTheBuyOrderPlaced(order.orderId);
         } catch (KiteException e) {
             // todo log
         } catch (IOException e) {
@@ -224,8 +223,7 @@ public class ZerodhaUtils implements IBrokerUtils {
             responseWrapper.tResponse(order.orderId);
             responseWrapper.isSuccessful(true);
 
-            OrderInternal orderInternal = OrderConverter.toOrder(order);
-            noteTheSellOrderPlaced(orderInternal);
+            noteTheSellOrderPlaced(order.orderId);
         } catch (KiteException | IOException e) {
             logStuff.datedLogIt(e.getMessage());
         }
