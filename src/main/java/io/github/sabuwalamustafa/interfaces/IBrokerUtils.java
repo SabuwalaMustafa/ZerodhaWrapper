@@ -36,7 +36,11 @@ public interface IBrokerUtils {
 
     String getBrokerId();
 
+    void noteTheBuyOrderPlaced(String orderId);
+
     void noteTheBuyOrderPlaced(OrderInternal orderInternal);
+
+    void noteTheSellOrderPlaced(String orderId);
 
     void noteTheSellOrderPlaced(OrderInternal orderInternal);
 }

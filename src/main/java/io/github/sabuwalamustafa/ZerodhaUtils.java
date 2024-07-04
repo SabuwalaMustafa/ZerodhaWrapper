@@ -114,9 +114,8 @@ public class ZerodhaUtils implements IBrokerUtils {
             responseWrapper.tResponse(
                     Double.parseDouble(margins.available.liveBalance));
             responseWrapper.isSuccessful(true);
-        } catch (KiteException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (KiteException | IOException e) {
+            logStuff.datedLogIt(e.getMessage());
             e.printStackTrace();
         }
         return responseWrapper.build();
@@ -369,9 +368,34 @@ public class ZerodhaUtils implements IBrokerUtils {
         return BROKER_ID;
     }
 
+    @Override public void noteTheBuyOrderPlaced(String orderId) {
+        ResponseWrapper<OrderInternal> orderInternalResponseWrapper
+                = getOrderDetails(orderId);
+        if (orderInternalResponseWrapper.isSuccessful()) {
+            noteTheBuyOrderPlaced(orderInternalResponseWrapper.getTResponse());
+        } else {
+            logStuff.datedLogIt(
+                    "IMP :: noteTheBuyOrderPlaced(String orderId) failed to "
+                    + "fetch order details for order id: "
+                    + orderId);
+        }
+    }
+
     @Override public void noteTheBuyOrderPlaced(OrderInternal orderInternal) {
         // todo: Think if something else is needed here.
         orderStoreWrapper.onSuccessfulOrderPlacement(orderInternal);
+    }
+
+    @Override public void noteTheSellOrderPlaced(String orderId) {
+        ResponseWrapper<OrderInternal> orderInternalResponseWrapper
+                = getOrderDetails(orderId);
+        if (orderInternalResponseWrapper.isSuccessful()) {
+            noteTheSellOrderPlaced(orderInternalResponseWrapper.getTResponse());
+        } else {
+            logStuff.datedLogIt(
+                    "IMP :: noteTheSellOrderPlaced(String orderId) failed to "
+                    + "fetch order details for order id: " + orderId);
+        }
     }
 
     @Override public void noteTheSellOrderPlaced(OrderInternal orderInternal) {
