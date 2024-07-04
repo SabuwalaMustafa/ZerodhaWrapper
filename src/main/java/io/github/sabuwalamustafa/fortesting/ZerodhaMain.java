@@ -3,7 +3,9 @@ package io.github.sabuwalamustafa.fortesting;
 
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import io.github.sabuwalamustafa.ZerodhaUtils;
-import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.filesystemhandlers.FileSystemHandler;
+import io.github.sabuwalamustafa.logger.ILogStuff;
+import io.github.sabuwalamustafa.logger.MyLogger;
 import io.github.sabuwalamustafa.models.DatabaseConfig;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
 import io.github.sabuwalamustafa.utils_utils;
@@ -28,13 +30,14 @@ class ZerodhaMain {
         databaseConfig.setUsername(argsMap.get("jdbcUsername"));
         databaseConfig.setPassword(argsMap.get("jdbcPassword"));
 
-        FileUtils fileUtils = FileUtils.getInstance();
-        ILogStuff logStuff = LogStuff.getInstance(fileUtils, null);
+        FileSystemHandler fileUtils = FileSystemHandler.getInstance();
+        // todo : construct logsFolderPath
+        ILogStuff logStuff = MyLogger.getInstance("", fileUtils);
 
 //        String googleCloudKeyFilePath = "google_cloud_key.json";
-//        InputStream inputStream = ResourcesFileUtils.getInstance()
+//        InputStream inputStream = ResourcesFileSystemHandler.getInstance()
 //                                                    .getInputStream(
-//                                  GFSFileUtils.class,
+//                                  GFSFileSystemHandler.class,
 //                                  googleCloudKeyFilePath);
         // Use the input stream as needed (e.g., read its content)
         String googleCloudKeyFilePath

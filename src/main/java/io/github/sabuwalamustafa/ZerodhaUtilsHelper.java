@@ -4,7 +4,7 @@ import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.models.Order;
 import io.github.sabuwalamustafa.converters.OrderConverter;
-import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.logger.ILogStuff;
 import io.github.sabuwalamustafa.models.OrderInternal;
 
 import java.io.IOException;

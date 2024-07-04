@@ -4,12 +4,12 @@ import com.google.auth.Credentials;
 import com.sabu.at.DateTimeUtils;
 import com.zerodhatech.models.*;
 import io.github.sabuwalamustafa.converters.OrderConverter;
+import io.github.sabuwalamustafa.filesystemhandlers.IFileSystemHandler;
 import io.github.sabuwalamustafa.interfaces.IBrokerUtils;
 import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
-import io.github.sabuwalamustafa.interfaces.IFileUtils;
-import io.github.sabuwalamustafa.interfaces.ILogStuff;
+import io.github.sabuwalamustafa.logger.ILogStuff;
 import io.github.sabuwalamustafa.models.DatabaseConfig;
 import io.github.sabuwalamustafa.models.OrderCore;
 import io.github.sabuwalamustafa.models.OrderInternal;
@@ -29,7 +29,7 @@ public class ZerodhaUtils implements IBrokerUtils {
     private KiteConnect kiteSdk;
     private ZerodhaTokensProvider zerodhaTokensProvider;
     private ILogStuff logStuff;
-    private IFileUtils gfsFileUtils;
+    private IFileSystemHandler gfsFileUtils;
     private FilePathsProvider filePathsProvider;
     private OrderStoreWrapper orderStoreWrapper;
     private ZerodhaUtilsHelper zerodhaUtilsHelper;
@@ -42,7 +42,7 @@ public class ZerodhaUtils implements IBrokerUtils {
         // todo: better way to pass zerodha config than a map<>
         this.logStuff = logStuff;
         this.filePathsProvider = new FilePathsProvider();
-        this.gfsFileUtils = GFSFileUtilsFactory.getGFSFileUtils(credentials);
+        this.gfsFileUtils = GFSFileSystemHandlerFactory.getGFSFileSystemHandler(credentials);
         this.orderStoreWrapper = new OrderStoreWrapper(databaseConfig);
 
         init(zerodhaConfig.get("zerodha_api"),
@@ -192,8 +192,7 @@ public class ZerodhaUtils implements IBrokerUtils {
             responseWrapper.tResponse(order.orderId);
             responseWrapper.isSuccessful(true);
 
-            OrderInternal orderInternal = OrderConverter.toOrder(order);
-            noteTheBuyOrderPlaced(orderInternal);
+            noteTheBuyOrderPlaced(order.orderId);
         } catch (KiteException e) {
             // todo log
         } catch (IOException e) {
@@ -224,8 +223,7 @@ public class ZerodhaUtils implements IBrokerUtils {
             responseWrapper.tResponse(order.orderId);
             responseWrapper.isSuccessful(true);
 
-            OrderInternal orderInternal = OrderConverter.toOrder(order);
-            noteTheSellOrderPlaced(orderInternal);
+            noteTheSellOrderPlaced(order.orderId);
         } catch (KiteException | IOException e) {
             logStuff.datedLogIt(e.getMessage());
         }
