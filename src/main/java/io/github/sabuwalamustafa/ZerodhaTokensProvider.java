@@ -1,16 +1,16 @@
 package io.github.sabuwalamustafa;
 
-import io.github.sabuwalamustafa.interfaces.IFileUtils;
+import io.github.sabuwalamustafa.filesystemhandlers.IFileSystemHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ZerodhaTokensProvider {
-    private IFileUtils gfsFileUtils;
+    private IFileSystemHandler gfsFileUtils;
     private FilePathsProvider filePathsProvider;
 
-    public ZerodhaTokensProvider(IFileUtils gfsFileUtils,
+    public ZerodhaTokensProvider(IFileSystemHandler gfsFileUtils,
             FilePathsProvider filePathsProvider) {
         this.gfsFileUtils = gfsFileUtils;
         this.filePathsProvider = filePathsProvider;

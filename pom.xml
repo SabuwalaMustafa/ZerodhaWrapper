@@ -5,7 +5,7 @@
     <groupId>io.github.sabuwalamustafa</groupId>
     <artifactId>sabu-at-zerodhawrapper</artifactId>
     <packaging>jar</packaging>
-    <version>1.9</version>
+    <version>1.10</version>
     <name>sabu-at-zerodhawrapper</name>
     <description>A brief description of my project</description>
     <url>http://maven.apache.org</url>
@@ -83,6 +83,16 @@
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.sabuwalamustafa</groupId>
+            <artifactId>sabu-at-filesystemhandlers</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.sabuwalamustafa</groupId>
+            <artifactId>sabu-at-mylogger</artifactId>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.sabuwalamustafa</groupId>
