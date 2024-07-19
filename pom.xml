@@ -5,7 +5,7 @@
     <groupId>io.github.sabuwalamustafa</groupId>
     <artifactId>sabu-at-zerodhawrapper</artifactId>
     <packaging>jar</packaging>
-    <version>1.10</version>
+    <version>1.11</version>
     <name>sabu-at-zerodhawrapper</name>
     <description>A brief description of my project</description>
     <url>http://maven.apache.org</url>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>io.github.sabuwalamustafa</groupId>
             <artifactId>sabu-at-orderstore</artifactId>
-            <version>1.3</version>
+            <version>1.6</version>
         </dependency>
         <dependency>
             <groupId>io.github.sabuwalamustafa</groupId>
