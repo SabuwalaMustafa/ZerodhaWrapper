@@ -3,7 +3,9 @@ package io.github.sabuwalamustafa;
 import com.google.auth.Credentials;
 import com.sabu.at.DateTimeUtils;
 import com.zerodhatech.models.*;
+import io.github.sabuwalamustafa.converters.HoldingConverter;
 import io.github.sabuwalamustafa.converters.OrderConverter;
+import io.github.sabuwalamustafa.converters.PositionConverter;
 import io.github.sabuwalamustafa.filesystemhandlers.IFileSystemHandler;
 import io.github.sabuwalamustafa.interfaces.IBrokerUtils;
 import com.zerodhatech.kiteconnect.KiteConnect;
@@ -14,6 +16,8 @@ import io.github.sabuwalamustafa.models.DatabaseConfig;
 import io.github.sabuwalamustafa.models.OrderCore;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
+import io.github.sabuwalamustafa.models.brokermodels.HoldingInternal;
+import io.github.sabuwalamustafa.models.brokermodels.PositionInternal;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
@@ -42,7 +46,8 @@ public class ZerodhaUtils implements IBrokerUtils {
         // todo: better way to pass zerodha config than a map<>
         this.logStuff = logStuff;
         this.filePathsProvider = new FilePathsProvider();
-        this.gfsFileUtils = GFSFileSystemHandlerFactory.getGFSFileSystemHandler(credentials);
+        this.gfsFileUtils = GFSFileSystemHandlerFactory.getGFSFileSystemHandler(
+                credentials);
         this.orderStoreWrapper = new OrderStoreWrapper(databaseConfig);
 
         init(zerodhaConfig.get("zerodha_api"),
@@ -360,6 +365,55 @@ public class ZerodhaUtils implements IBrokerUtils {
         }
 
         return rwBuilder.build();
+    }
+
+    @Override public ResponseWrapper<List<HoldingInternal>> getHoldings(
+            List<String> symbols) {
+        List<HoldingInternal> holdingInternals = null;
+        try {
+            List<Holding> holdings = kiteSdk.getHoldings();
+            holdingInternals = holdings.stream().filter(
+                                               holding -> symbols.contains(holding.tradingSymbol)).map(
+                                               HoldingConverter::toInternalModel)
+                                       .collect(Collectors.toList());
+        } catch (KiteException | IOException e) {
+            // todo log
+        }
+        ResponseWrapper.ResponseWrapperBuilder<List<HoldingInternal>>
+                responseWrapper = ResponseWrapper.builder();
+        if (holdingInternals != null) {
+            responseWrapper.tResponse(holdingInternals);
+            responseWrapper.isSuccessful(true);
+            // todo: log or do some handling if one or more requested
+            //  symbol's holding is not found.
+        }
+
+        return responseWrapper.build();
+    }
+
+    @Override public ResponseWrapper<List<PositionInternal>> getPositions(
+            List<String> symbols) {
+        List<PositionInternal> positionInternals = null;
+        try {
+            Map<String, List<Position>> positionsMap = kiteSdk.getPositions();
+            // todo: check if .get("day") works as intended.
+            positionInternals = positionsMap.get("day").stream().filter(
+                                                    holding -> symbols.contains(holding.tradingSymbol)).map(
+                                                    PositionConverter::toInternalModel)
+                                            .collect(Collectors.toList());
+        } catch (KiteException | IOException e) {
+            // todo log
+        }
+        ResponseWrapper.ResponseWrapperBuilder<List<PositionInternal>>
+                responseWrapper = ResponseWrapper.builder();
+        if (positionInternals != null) {
+            responseWrapper.tResponse(positionInternals);
+            responseWrapper.isSuccessful(true);
+            // todo: log or do some handling if one or more requested
+            //  symbol's holding is not found.
+        }
+
+        return responseWrapper.build();
     }
 
     @Override public String getBrokerId() {
