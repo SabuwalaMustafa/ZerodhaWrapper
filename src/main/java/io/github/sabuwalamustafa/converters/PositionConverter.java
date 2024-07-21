@@ -2,7 +2,6 @@ package io.github.sabuwalamustafa.converters;
 
 import com.zerodhatech.models.Position;
 import io.github.sabuwalamustafa.models.brokermodels.Asset;
-import io.github.sabuwalamustafa.models.brokermodels.Exchange;
 import io.github.sabuwalamustafa.models.brokermodels.PositionInternal;
 
 public class PositionConverter {
