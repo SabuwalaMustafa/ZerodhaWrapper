@@ -4,6 +4,8 @@ import com.zerodhatech.models.HistoricalData;
 import io.github.sabuwalamustafa.models.OrderCore;
 import io.github.sabuwalamustafa.models.OrderInternal;
 import io.github.sabuwalamustafa.models.ResponseWrapper;
+import io.github.sabuwalamustafa.models.brokermodels.HoldingInternal;
+import io.github.sabuwalamustafa.models.brokermodels.PositionInternal;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +35,10 @@ public interface IBrokerUtils {
     ResponseWrapper<List<HistoricalData>> getHistoricalData(
             String symbol,
             String startTimestampStr, String endTimestampInclusiveStr);
+
+    ResponseWrapper<List<HoldingInternal>> getHoldings(List<String> symbol);
+
+    ResponseWrapper<List<PositionInternal>> getPositions(List<String> symbol);
 
     String getBrokerId();
 
